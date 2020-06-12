@@ -1,0 +1,61 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-latest'
+  demands:
+  - vstest
+
+variables:
+  solution: 'iSHARE.sln'
+  buildConfiguration: 'Release'
+  version: '1.0.0'
+
+steps:
+- task: NuGetCommand@2
+  displayName: 'NuGet restore'
+  inputs:
+    restoreSolution: '$(solution)'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '**/*.csproj'
+    arguments: '-c $(buildConfiguration)'
+
+- task: VSTest@2
+  displayName: 'run unit tests'
+  inputs:
+    testAssemblyVer2: |
+     **\*Tests.dll
+     !**\*TestAdapter.dll
+     !**\obj\**
+
+- task: VSTest@2
+  displayName: 'run integration tests'
+  inputs:
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: |
+      **\*IntegrationTests.dll
+      !**\*TestAdapter.dll
+      !**\obj\**
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    codeCoverageEnabled: true
+
+- task: DotNetCoreCLI@2
+  displayName: 'pack NuGet'
+  inputs:
+    command: 'pack'
+    packagesToPack: '**/iSHARE.csproj'
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'version'
+
+- task: NuGetCommand@2
+  displayName: 'publish NuGet'
+  inputs:
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    nuGetFeedType: 'external'
+    publishFeedCredentials: 'iSHARE NuGet repo'
+    versioningScheme: byEnvVar
+    versionEnvVar: 'version'
