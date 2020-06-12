@@ -1,5 +1,7 @@
 <img src="https://ishare-docs.azurewebsites.net/_static/logo.svg" alt="iSHARE">
 
+[![Build Status](https://dev.azure.com/isharefoundation/iSHARE/_apis/build/status/iSHAREScheme.iSHARE.NET?branchName=master)](https://dev.azure.com/isharefoundation/iSHARE/_build/latest?definitionId=7&branchName=master)
+
 ## What this library does?
 
 This is official iSHARE library which provides core functionality for service consumers. In other words it encapsulates HTTP request calls towards iSHARE endpoints, JWT response validation and mapping business logic.
