@@ -1,8 +1,10 @@
 trigger:
   branches:
-    include: master
+    include: 
+      - master
   paths:
-    exclude: README.md
+    exclude:
+      - README.md
 
 pool:
   vmImage: 'windows-latest'
