@@ -96,4 +96,4 @@ If you're still running into problems and believe there might be a bug or the li
 
 ## License, etc.
 
-iSHARE library is Copyright &copy; 2020 [iSHARE foundation](https://www.ishareworks.org) under the [MIT license](LICENSE.txt).
+iSHARE library is Copyright &copy; 2020 [iSHARE foundation](https://www.ishareworks.org) under the [MIT license](LICENSE).

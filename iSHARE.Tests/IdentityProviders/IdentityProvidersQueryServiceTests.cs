@@ -125,6 +125,7 @@ namespace iSHARE.Tests.IdentityProviders
 
             result.Should().HaveCount(1);
             result.First().Name.Should().Be("party name");
+            result.First().Eori.Should().Be("party id");
             result.First().BaseUri.Should().BeEquivalentTo(new Uri("http://localhost.com/idp/connect"));
         }
 

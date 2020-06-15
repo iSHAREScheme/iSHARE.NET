@@ -1,5 +1,8 @@
 trigger:
-- master
+  branches:
+    include: master
+  paths:
+    exclude: README.md
 
 pool:
   vmImage: 'windows-latest'
@@ -9,7 +12,7 @@ pool:
 variables:
   solution: 'iSHARE.sln'
   buildConfiguration: 'Release'
-  version: '1.0.1'
+  version: '1.0.2'
 
 steps:
 - task: NuGetCommand@2

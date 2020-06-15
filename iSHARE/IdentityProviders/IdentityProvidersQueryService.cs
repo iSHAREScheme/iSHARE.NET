@@ -146,15 +146,15 @@ namespace iSHARE.IdentityProviders
                     continue;
                 }
 
-                var partyName = parties.FirstOrDefault(x => x.PartyId == result.PartyId)?.PartyName;
+                var party = parties.FirstOrDefault(x => x.PartyId == result.PartyId);
                 var uri = result.SupportedVersions?.FirstOrDefault()
                     ?.SupportedFeatures?.FirstOrDefault()
                     ?.Public?.FirstOrDefault(x => x.Url.AbsoluteUri.Contains("authorize"))?.Url;
 
-                if (partyName != null && uri != null)
+                if (party?.PartyName != null && party.PartyId != null && uri != null)
                 {
                     uri = new Uri(FormatIdpUri(uri.AbsoluteUri));
-                    results.Add(new IdentityProvider(partyName, uri));
+                    results.Add(new IdentityProvider(party.PartyName, party.PartyId, uri));
                 }
             }
 
