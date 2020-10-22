@@ -45,7 +45,7 @@ namespace iSHARE.TokenValidator
             using var hasher = new SHA256Managed();
             var hashBytes = hasher.ComputeHash(cert.RawData);
 
-            return BitConverter.ToString(hashBytes).Replace("-", "", StringComparison.CurrentCultureIgnoreCase);
+            return BitConverter.ToString(hashBytes).Replace("-", "");
         }
     }
 }

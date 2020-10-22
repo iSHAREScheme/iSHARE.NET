@@ -49,7 +49,7 @@ namespace iSHARE.Internals.GenericHttpClient
 
         private static async Task<string> ExtractToken(HttpContent httpContent, CancellationToken token)
         {
-            await using var responseStream = await httpContent.ReadAsStreamAsync();
+            using var responseStream = await httpContent.ReadAsStreamAsync();
             var response = await JsonSerializer.DeserializeAsync<Dictionary<string, string>>(
                 responseStream,
                 cancellationToken: token);

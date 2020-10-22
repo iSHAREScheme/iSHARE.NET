@@ -43,7 +43,7 @@ namespace iSHARE
 
         private static string BuildArrayString<T>(Claim[] claims)
         {
-            return $"[{string.Join(',', claims.Select(x => x.Value))}]";
+            return $"[{string.Join(",", claims.Select(x => x.Value))}]";
         }
 
         private static void ValidateArguments(JwtSecurityToken jwtToken, string claimName)
