@@ -49,20 +49,22 @@ namespace iSHARE.Internals.GenericHttpClient
 
         private static async Task<string> ExtractToken(HttpContent httpContent, CancellationToken token)
         {
-            await using var responseStream = await httpContent.ReadAsStreamAsync();
-            var response = await JsonSerializer.DeserializeAsync<Dictionary<string, string>>(
-                responseStream,
-                cancellationToken: token);
-
-            var tokenPair = response.FirstOrDefault(x => x.Key.EndsWith("_token"));
-            if (WasTokenFound(tokenPair))
+            using (var responseStream = await httpContent.ReadAsStreamAsync())
             {
-                return tokenPair.Value;
-            }
+                var response = await JsonSerializer.DeserializeAsync<Dictionary<string, string>>(
+                    responseStream,
+                    cancellationToken: token);
 
-            var msg = $"Token with suffix '_token' was not found.{Environment.NewLine}" +
-                      $"Response: {JsonSerializer.Serialize(response)}";
-            throw new TokenNotFoundException(msg);
+                var tokenPair = response.FirstOrDefault(x => x.Key.EndsWith("_token"));
+                if (WasTokenFound(tokenPair))
+                {
+                    return tokenPair.Value;
+                }
+
+                var msg = $"Token with suffix '_token' was not found.{Environment.NewLine}" +
+                          $"Response: {JsonSerializer.Serialize(response)}";
+                throw new TokenNotFoundException(msg);
+            }
         }
 
         private static bool WasTokenFound(KeyValuePair<string, string> tokenPair)

@@ -10,8 +10,8 @@ namespace iSHARE.TokenValidator.SchemeOwner.TestCaStrategy
     /// </summary>
     internal interface ITestCaStrategy
     {
-        public X509RevocationMode GetRevocationMode();
+        X509RevocationMode GetRevocationMode();
 
-        public bool ShouldErrorsBeIgnored(ICollection<X509ChainStatus> statuses);
+        bool ShouldErrorsBeIgnored(ICollection<X509ChainStatus> statuses);
     }
 }

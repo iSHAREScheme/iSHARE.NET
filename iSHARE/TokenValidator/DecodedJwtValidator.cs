@@ -90,18 +90,18 @@ namespace iSHARE.TokenValidator
 
         private static bool IsHeaderInvalid(JwtHeader header)
         {
-            static bool IsAlgInvalid(string alg) => alg != SecurityAlgorithms.RsaSha256;
-            static bool IsTypInvalid(string typ) => typ != "JWT";
+            bool IsAlgInvalid(string alg) => alg != SecurityAlgorithms.RsaSha256; 
+            bool IsTypInvalid(string typ) => typ != "JWT";
 
             return IsAlgInvalid(header.Alg) || IsTypInvalid(header.Typ);
         }
 
         private static bool IsPayloadInvalid(JwtPayload payload)
         {
-            static bool IsSubInvalid(string sub, string iss) => sub != iss;
-            static bool IsJtiInvalid(string jti) => string.IsNullOrWhiteSpace(jti);
-            static bool WasIssuedBeforeNow(int? iat) => iat == null || DateTime.UtcNow.ToEpochTime() < iat;
-            static bool HasIncorrectExpiration(int? iat, int? exp) => exp - iat != 30;
+            bool IsSubInvalid(string sub, string iss) => sub != iss;
+            bool IsJtiInvalid(string jti) => string.IsNullOrWhiteSpace(jti);
+            bool WasIssuedBeforeNow(int? iat) => iat == null || DateTime.UtcNow.ToEpochTime() < iat;
+            bool HasIncorrectExpiration(int? iat, int? exp) => exp - iat != 30;
 
             return IsSubInvalid(payload.Sub, payload.Iss)
                || IsJtiInvalid(payload.Jti)

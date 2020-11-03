@@ -37,7 +37,7 @@ namespace iSHARE.AccessToken.Args
 
         private static void ValidateArguments(string requestUri, string clientId, string clientAssertion)
         {
-            static void ValidateSingle(string value, string nameOf)
+            void ValidateSingle(string value, string nameOf)
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {

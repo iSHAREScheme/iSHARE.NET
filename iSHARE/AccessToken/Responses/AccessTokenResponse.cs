@@ -21,8 +21,10 @@ namespace iSHARE.AccessToken.Responses
 
         public static async Task<AccessTokenResponse> FromHttpContentAsync(HttpContent httpContent)
         {
-            await using var responseStream = await httpContent.ReadAsStreamAsync();
-            return await JsonSerializer.DeserializeAsync<AccessTokenResponse>(responseStream);
+            using (var responseStream = await httpContent.ReadAsStreamAsync())
+            {
+                return await JsonSerializer.DeserializeAsync<AccessTokenResponse>(responseStream);
+            }
         }
     }
 }

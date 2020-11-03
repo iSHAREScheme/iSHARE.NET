@@ -61,7 +61,7 @@ namespace iSHARE.Capabilities.Args
             string schemeOwnerAccessToken,
             string accessToken)
         {
-            static void EnsureValidString(string name, string value)
+            void EnsureValidString(string name, string value)
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
