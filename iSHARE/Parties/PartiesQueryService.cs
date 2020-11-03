@@ -87,7 +87,7 @@ namespace iSHARE.Parties
             AddParameter("certified_only", args.CertifiedOnly);
             AddParameter("active_only", args.ActiveOnly);
             AddParameterIfExists("certificate_subject_name", args.CertificateSubjectName);
-            AddParameterIfExists("page", args.Page == null ? null : args.Page.ToString());
+            AddParameterIfExists("page", args.Page?.ToString());
             AddParameterIfExists("date_time", args.DateTime == null ? null : args.DateTime.Value.ToString("s") + "Z");
 
             return dictionary;

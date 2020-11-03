@@ -63,34 +63,36 @@ namespace iSHARE.TokenValidator
 
         private bool IsChainValid(X509Certificate2 primaryCertificate, X509Certificate2[] additionalCertificates)
         {
-            using var chain = new X509Chain();
-            chain.ChainPolicy.ExtraStore.AddRange(additionalCertificates);
-
-            chain.ChainPolicy.RevocationMode = _testCaStrategy.GetRevocationMode();
-            var isValid = chain.Build(primaryCertificate);
-            if (isValid)
+            using (var chain = new X509Chain())
             {
-                return true;
+                chain.ChainPolicy.ExtraStore.AddRange(additionalCertificates);
+
+                chain.ChainPolicy.RevocationMode = _testCaStrategy.GetRevocationMode();
+                var isValid = chain.Build(primaryCertificate);
+                if (isValid)
+                {
+                    return true;
+                }
+
+                var statuses = chain
+                    .ChainElements
+                    .OfType<X509ChainElement>()
+                    .SelectMany(c => c.ChainElementStatus)
+                    .ToArray();
+
+                if (_testCaStrategy.ShouldErrorsBeIgnored(statuses))
+                {
+                    // allow untrusted root
+                    // for the places where the iSHARE root is not installed (build server)
+                    // even if it's untrusted, trusted list service will do the last check to assure it's actually trusted
+                    isValid = true;
+                }
+
+                _logger.LogInformation(
+                    "Chain validation status information {results}.", statuses.Select(c => c.StatusInformation).ToList());
+
+                return isValid;
             }
-
-            var statuses = chain
-                .ChainElements
-                .OfType<X509ChainElement>()
-                .SelectMany(c => c.ChainElementStatus)
-                .ToArray();
-
-            if (_testCaStrategy.ShouldErrorsBeIgnored(statuses))
-            {
-                // allow untrusted root
-                // for the places where the iSHARE root is not installed (build server)
-                // even if it's untrusted, trusted list service will do the last check to assure it's actually trusted
-                isValid = true;
-            }
-
-            _logger.LogInformation(
-                "Chain validation status information {results}.", statuses.Select(c => c.StatusInformation).ToList());
-
-            return isValid;
         }
 
         private async Task<bool> DoesCertificateBelongToParty(

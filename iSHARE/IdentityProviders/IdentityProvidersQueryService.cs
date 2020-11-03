@@ -64,7 +64,7 @@ namespace iSHARE.IdentityProviders
 
         private async Task<ICollection<Party>> RetrieveIdpPartiesAsync(string accessToken, CancellationToken token)
         {
-            static bool IsValidIdp(Party party)
+            bool IsValidIdp(Party party)
             {
                 var certification = party.Certifications.FirstOrDefault(c => c.Role == IdentityProvider);
                 if (certification == null)
@@ -93,10 +93,10 @@ namespace iSHARE.IdentityProviders
             PartiesResponse partiesResponse,
             CancellationToken token)
         {
-            static int CalculateTotalPages(PartiesResponse partiesResponse)
+            int CalculateTotalPages(PartiesResponse innerPartiesResponse)
             {
-                var pagesCount = partiesResponse.Count / 10;
-                if (partiesResponse.Count % 10 != 0)
+                var pagesCount = innerPartiesResponse.Count / 10;
+                if (innerPartiesResponse.Count % 10 != 0)
                 {
                     pagesCount++;
                 }

@@ -74,33 +74,35 @@ namespace iSHARE.TokenValidator.SchemeOwner
 
         private bool IsChainValid(X509Certificate2 primaryCertificate, X509Certificate2[] additionalCertificates)
         {
-            using var chain = new X509Chain();
-            chain.ChainPolicy.ExtraStore.AddRange(additionalCertificates);
-
-            chain.ChainPolicy.RevocationMode = _testCaStrategy.GetRevocationMode();
-            var isValidByPolicy = chain.Build(primaryCertificate);
-            if (isValidByPolicy)
+            using (var chain = new X509Chain())
             {
-                return true;
+                chain.ChainPolicy.ExtraStore.AddRange(additionalCertificates);
+
+                chain.ChainPolicy.RevocationMode = _testCaStrategy.GetRevocationMode();
+                var isValidByPolicy = chain.Build(primaryCertificate);
+                if (isValidByPolicy)
+                {
+                    return true;
+                }
+
+                var statuses = chain
+                    .ChainElements
+                    .OfType<X509ChainElement>()
+                    .SelectMany(c => c.ChainElementStatus)
+                    .ToList();
+
+                if (_testCaStrategy.ShouldErrorsBeIgnored(statuses))
+                {
+                    // allow untrusted root
+                    // for the places where the iSHARE root is not installed (build server)
+                    isValidByPolicy = true;
+                }
+
+                _logger.LogInformation(
+                    "Chain validation status information {results}.", statuses.Select(c => c.StatusInformation).ToList());
+
+                return isValidByPolicy;
             }
-
-            var statuses = chain
-                .ChainElements
-                .OfType<X509ChainElement>()
-                .SelectMany(c => c.ChainElementStatus)
-                .ToList();
-
-            if (_testCaStrategy.ShouldErrorsBeIgnored(statuses))
-            {
-                // allow untrusted root
-                // for the places where the iSHARE root is not installed (build server)
-                isValidByPolicy = true;
-            }
-
-            _logger.LogInformation(
-                "Chain validation status information {results}.", statuses.Select(c => c.StatusInformation).ToList());
-
-            return isValidByPolicy;
         }
     }
 }
